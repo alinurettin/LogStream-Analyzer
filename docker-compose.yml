@@ -1,0 +1,6 @@
+﻿version: '3.8'
+services:
+  logstream-analyzer:
+    build: .
+    ports:
+      - "6000:6000"
