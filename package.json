@@ -1,6 +1,6 @@
-﻿{
+{
   "name": "logstream-analyzer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Real-time log stream parser with regex pattern matching, error burst detection, and live browser telemetry.",
   "main": "src/index.js",
   "scripts": {

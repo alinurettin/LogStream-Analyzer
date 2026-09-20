@@ -1,36 +1,156 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LogStream-Analyzer | Operational Studio</title>
+  <title>LogStream-Analyzer | Streaming Observability & Threat Detection Studio</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header class="header">
     <div class="brand">
-      <span class="logo">⚡</span>
+      <div class="logo-box">📊</div>
       <div>
-        <h1>LogStream-Analyzer</h1>
-        <span class="sub">High-Throughput Log Ingestion & Anomaly Alert Engine</span>
+        <h1>LogStream-Analyzer <span class="badge-v">v2.0.0</span></h1>
+        <span class="sub">Streaming Telemetry, Multi-Format Parser, Shannon Entropy & Threat Detection</span>
       </div>
     </div>
-    <div class="status-badge">🟢 Operational Active</div>
+    <div class="header-right">
+      <button id="simulateBtn" class="btn-secondary">⚡ Inject Traffic Flood</button>
+      <div class="status-pill"><span class="dot"></span> SSE STREAM LIVE</div>
+    </div>
   </header>
+
   <main class="main">
-    <div class="card">
-      <h2>Engine Overview</h2>
-      <p>Real-time log stream parser with regex pattern matching, error burst detection, and live browser telemetry.</p>
-      <div class="metrics-row" id="metricsRow">
-        <div class="metric"><span class="lbl">STATUS</span><span class="val">HEALTHY</span></div>
-        <div class="metric"><span class="lbl">LATENCY</span><span class="val">1.2 ms</span></div>
-        <div class="metric"><span class="lbl">THROUGHPUT</span><span class="val">1,250 req/s</span></div>
+    <!-- Telemetry Cards -->
+    <section class="telemetry-grid">
+      <div class="stat-card">
+        <span class="stat-label">TOTAL LOGS INGESTED</span>
+        <span class="stat-value text-accent" id="statTotal">--</span>
+        <span class="stat-sub" id="statThroughput">-- logs / sec</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ERROR RATE</span>
+        <span class="stat-value text-warning" id="statErrorRate">--%</span>
+        <span class="stat-sub" id="statErrorsCount">-- total 5xx/errors</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">THREAT SIGNATURES</span>
+        <span class="stat-value text-danger" id="statThreats">--</span>
+        <span class="stat-sub">SQLi / XSS / Traversal</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">ANOMALIES & SPIKES</span>
+        <span class="stat-value text-accent" id="statAnomalies">--</span>
+        <span class="stat-sub">3-Sigma Z-Score & Entropy</span>
+      </div>
+    </section>
+
+    <!-- Shannon Entropy & Threat Scanner -->
+    <section class="panel-card">
+      <div class="panel-header flex-between">
+        <h3>🔬 Real-Time Shannon Entropy & Exploit Payload Scanner</h3>
+        <span class="badge-tag">H(X) = -Σ P(x) log₂(P(x))</span>
+      </div>
+      <div class="entropy-box">
+        <div class="entropy-input-row">
+          <input type="text" id="entropyInput" value="/api/data?q=UNION%20SELECT%20username,password%20FROM%20users" placeholder="Enter URI query, log message or payload...">
+          <button id="calcEntropyBtn" class="btn-primary-inline">Analyze Payload</button>
+        </div>
+        <div class="entropy-results">
+          <div class="entropy-metric">
+            <span class="lbl">SHANNON ENTROPY:</span>
+            <span class="val" id="entropyVal">-- bits/char</span>
+          </div>
+          <div class="entropy-metric">
+            <span class="lbl">ANOMALY STATUS:</span>
+            <span class="val" id="entropyStatus">--</span>
+          </div>
+          <div class="entropy-metric">
+            <span class="lbl">THREAT SIGNATURE:</span>
+            <span class="val" id="threatSignature">--</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Workspace: Ingest & Waterfall -->
+    <div class="workspace-grid">
+      <!-- Left: Ingest Form -->
+      <div class="col-ingest">
+        <div class="panel-card">
+          <div class="panel-header">
+            <h3>📥 Ingest Live Log Entry</h3>
+          </div>
+          <div class="presets-row">
+            <button class="btn-preset" data-preset="combined">Nginx 200</button>
+            <button class="btn-preset" data-preset="sqli">SQLi Attack</button>
+            <button class="btn-preset" data-preset="traversal">Directory Traversal</button>
+            <button class="btn-preset" data-preset="json">JSON Error</button>
+            <button class="btn-preset" data-preset="syslog">Syslog Crit</button>
+          </div>
+          <form id="ingestForm">
+            <div class="form-group">
+              <label for="rawLogInput">Raw Log Entry</label>
+              <textarea id="rawLogInput" rows="4" required>192.168.1.100 - - [20/Sep/2026:12:00:00 +0000] "GET /api/v1/users HTTP/1.1" 200 1024 "-" "curl/7.81.0"</textarea>
+            </div>
+            <button type="submit" class="btn-primary">Process & Ingest Log</button>
+          </form>
+        </div>
+
+        <!-- Anomaly Stream -->
+        <div class="panel-card">
+          <div class="panel-header flex-between">
+            <h3>🚨 Recent Security Threats & Anomalies</h3>
+            <span class="badge-tag-danger" id="anomaliesBadge">0 Flagged</span>
+          </div>
+          <div class="anomalies-list" id="anomaliesList">
+            <div class="empty-state">No active anomalies detected.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live Log Waterfall -->
+      <div class="col-waterfall">
+        <div class="panel-card">
+          <div class="panel-header flex-between">
+            <h3>🌊 Live Log Telemetry Stream</h3>
+            <button class="btn-sm" id="clearWaterfallBtn">Clear Table</button>
+          </div>
+          <div class="table-wrap">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Format</th>
+                  <th>Level</th>
+                  <th>Client IP</th>
+                  <th>Message / Request</th>
+                  <th>Entropy</th>
+                  <th>Flags</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody">
+                <tr><td colspan="6" class="text-center">Awaiting log stream events...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </main>
+
   <footer class="footer">
-    <p>LogStream-Analyzer &bull; Autonomously engineered by 7-Agent SDLC Factory for <a href="https://github.com/alinurettin/LogStream-Analyzer" target="_blank">Ali Nurettin Demir</a></p>
+    <div class="footer-content">
+      <span>LogStream-Analyzer v2.0.0 &bull; Autonomously engineered by 7-Agent SDLC Software Factory</span>
+      <a href="https://github.com/alinurettin/LogStream-Analyzer" target="_blank" class="github-link">
+        GitHub: @alinurettin/LogStream-Analyzer
+      </a>
+    </div>
   </footer>
+
   <script src="app.js"></script>
 </body>
 </html>
