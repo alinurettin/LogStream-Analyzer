@@ -1,4 +1,4 @@
-﻿# ğŸ“ System Architecture Document: LogStream-Analyzer
+﻿# 📐 System Architecture Document: LogStream-Analyzer
 - **Project:** LogStream-Analyzer
 - **Author:** Expert Software Architect
 - **Status:** APPROVED & COMPLETE
