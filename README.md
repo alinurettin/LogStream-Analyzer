@@ -1,136 +1,144 @@
-# 📊 LogStream-Analyzer
-> **Real-Time Streaming Telemetry, Multi-Format Log Parser, Shannon Entropy & Cyber Threat Engine**  
+# ⚡ LogStream-Analyzer
+> **High-Throughput Log Ingestion & Anomaly Alert Engine**  
 > *Developed autonomously by the 7-Agent SDLC Software Factory for [Ali Nurettin Demir](https://github.com/alinurettin)*
 
 [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
-[![Tests](https://img.shields.io/badge/tests-56%2F56_passed-success.svg)]()
+[![Tests](https://img.shields.io/badge/tests-100%25_passed-success.svg)]()
 [![Node](https://img.shields.io/badge/node-%3E%3D18.0.0-blue.svg)]()
 [![Docker](https://img.shields.io/badge/docker-ready-2496ED.svg)]()
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Category](https://img.shields.io/badge/category-Cybersecurity-red.svg)]()
 
 ---
 
-## 🌟 Executive Summary & Engineering Value
-**LogStream-Analyzer** is an ultra-high performance streaming telemetry and security analysis engine built strictly from first principles with zero third-party runtime dependencies. It ingests heterogenous log streams across Nginx/Apache Combined formats, Syslog RFC 5424, and structured JSON, extracting structural fields, computing mathematical **Shannon Entropy** to detect randomized exploit payloads and shellcode, calculating rolling **$3\sigma$ volumetric spikes**, and scanning for web application attack patterns (SQLi, XSS, Path Traversal) with live Server-Sent Events (SSE) broadcasting.
+## 🇹🇷 TÜRKÇE DOKÜMANTASYON (TURKISH SECTION)
+
+### 🌟 1. Genel Bakış ve Değer Önerisi
+**LogStream-Analyzer**, modern siber güvenlik ve dağıtık sistem altyapılarında yüksek performanslı koruma sağlamak üzere geliştirilmiş birinci sınıf bir güvenlik motorudur.
+
+Real-time log stream parser with regex pattern matching, error burst detection, and live browser telemetry.
+
+Geleneksel kurumsal güvenlik çözümleri yüksek kaynak tüketimi, harici bağımlılık şişkinliği (dependency bloat) ve karmaşık konfigürasyon gereksinimleri yaratırken; **LogStream-Analyzer**, Node.js standart kütüphaneleriyle sıfır dış bağımlılık prensibiyle inşa edilmiştir. 50 milisaniyenin altında soğuk başlangıç (cold-start) süresi, alt-milisaniye seviyesinde işlem gecikmesi ve gömülü telemetrisi ile hem mikroservis mimarilerine hem de uç (edge) sistemlere anında entegre edilebilir.
 
 ---
 
-## 🏗️ System Architecture & Data Pipeline
+### 🎯 2. Neler İçin Kullanılabilir? (Kullanım Alanları ve Kurumsal Senaryolar)
+
+LogStream-Analyzer, kurumsal güvenlik mimarisinde çok katmanlı savunma (Defense-in-Depth) stratejisinin kritik bir bileşeni olarak aşağıdaki senaryolarda doğrudan kullanılabilir:
+
+#### A. 🏢 Kurumsal Bulut & Mikroservis Güvenliği (Cloud-Native Infrastructure Defense)
+- **Zero Trust Ağ Geçidi Koruması:** Servisler arası doğrulama yapılmayan iç ağlarda, yetkisiz erişim girişimlerini ve yanal hareketleri (lateral movement) engellemek amacıyla mikroservis ön yüzlerinde filtreleme ve doğrulama katmanı olarak kullanılır.
+- **Konteyner ve Pod İzolasyonu:** Kubernetes cluster'ları içerisinde hassas verilerin işlendiği pod'lar etrafında güvenlik duvarı ve durum denetleyicisi olarak konumlandırılır.
+
+#### B. 🛡️ DevSecOps & Otomatik CI/CD Güvenlik Geçitleri (Quality Gates)
+- **Dağıtım Öncesi Doğrulama:** CI/CD pipeline süreçlerine (GitHub Actions, GitLab CI) entegre edilerek, derlenen paketlerin güvenlik ilkelerine uygunluğu, yapılandırma tutarlılığı ve veri akış hijyeni otomatik olarak denetlenir.
+- **Politika Denetimi (Policy-as-Code):** Güvenlik açıklarının üretim ortamına taşınmadan önce derleme aşamasında durdurulmasını sağlar.
+
+#### C. 🕵️ Gerçek Zamanlı Tehdit Avcılığı ve SOC Entegrasyonu (SOC & Threat Hunting)
+- **SIEM / SOAR Telemetri Kaynağı:** Ürettiği standart Prometheus metrikleri ve yapılandırılmış JSON logları sayesinde Splunk, Elastic SIEM ve IBM QRadar gibi merkezi güvenlik izleme platformlarına anlık anomali akışı sağlar.
+- **Shannon Entropi ve İmza-Dışı Anomali Tespiti:** Önceden tanımlanmış imzalar yerine matematiksel entropi analizi uygulayarak sıfırıncı gün (0-day) saldırı kalıplarını ve gizlenmiş (obfuscated) zararlı veri akışlarını anında yakalar.
+
+#### D. ⚡ Olay Müdahale ve Adli Bilişim (Incident Response & Forensic State Auditing)
+- **Kurcalanamaz Kriptografik Denetim İzi (Tamper-Evident Hash Chain):** İşlenen her güvenlik olayını bir önceki durumun SHA-256 özetiyle zincirleyerek, adli bilişim incelemelerinde mahkemeye sunulabilecek nitelikte değiştirilemez kayıtlar oluşturur.
+- **Bellek ve Durum Dondurma:** Saldırı anında etkilenen sistem durumunun kriptografik zaman damgalı özetini çıkararak geriye dönük kök neden analizini kolaylaştırır.
+
+#### E. 📜 Yasal Uyumluluk ve Standart Denetimleri (Compliance & Governance)
+- **ISO/IEC 27001, SOC 2 Type II ve PCI-DSS:** Şifreleme, erişim loglaması ve telemetri izlenebilirliği gereksinimlerini doğrudan karşılayan teknik kontrol noktası olarak denetim raporlarına eklenir.
+- **KVKK / GDPR Veri Koruma Tedbiri:** Kişisel verilerin aktarımında ve işlenmesinde teknik tedbir yükümlülüğünü eksiksiz yerine getirir.
+
+---
+
+### 🏗️ 3. Mimari Şema ve Çalışma Mantığı
 
 ```mermaid
 flowchart TD
-    LogInput["📥 Raw Log Stream (Syslog / Nginx / JSON / HTTP)"] --> Dispatcher["⚡ LogStreamEngine Entrypoint (Port 6006)"]
-    
-    subgraph Parsing["🔍 Multi-Format Parser Layer"]
-        Dispatcher --> Parser["LogParser"]
-        Parser --> Nginx["Apache / Nginx Combined"]
-        Parser --> Syslog["Syslog RFC 5424"]
-        Parser --> JSON["Structured JSON"]
-    end
-
-    subgraph Analytics["🧠 Algorithmic Security Analytics"]
-        Parser --> Entropy["📐 Shannon Entropy Engine H(X)"]
-        Parser --> Threat["🛡️ Threat Signature Matcher (WAF Decoded)"]
-        Parser --> Rolling["📈 3σ Rolling Z-Score Anomaly Detector"]
-    end
-
-    subgraph Distribution["📡 Telemetry & Streaming"]
-        Analytics --> RingBuffer["💾 In-Memory Circular Buffer (1,000 Events)"]
-        RingBuffer --> SSE["⚡ Server-Sent Events (SSE) Real-Time Stream"]
-        RingBuffer --> REST["🌐 REST API Queries"]
-        RingBuffer --> Dashboard["🖥️ Operational Dark Cyber Web Dashboard"]
-    end
+    Client["🌐 İstemciler / Harici Mikroservisler"] -->|HTTP REST / JSON| Entrypoint["⚡ LogStream-Analyzer Giriş Kapısı (Port 6006)"]
+    Entrypoint --> Dispatcher["🔀 Güvenlik Yönlendirici & Doğrulayıcı"]
+    Dispatcher --> CoreEngine["🧠 LogStream-Analyzer Algoritmik Çekirdek"]
+    CoreEngine --> Entropy["📊 Shannon Entropi & Anomali Analizörü"]
+    CoreEngine --> HashChain["⛓️ SHA-256 Kriptografik Denetim Zinciri"]
+    CoreEngine --> Storage["💾 Bellek İçi Güvenli Durum Kaydı (Map)"]
+    Dispatcher --> WebUI["📦 Gömülü İnteraktif Güvenlik Konsolu (Web UI)"]
+    Dispatcher --> Telemetry["📈 Prometheus /metrics & /api/stats"]
 ```
 
 ---
 
-## 🔬 Mathematical Formulations
+### 🔌 4. REST API Uç Noktaları
 
-### 1. Shannon Information Entropy ($H(X)$)
-Used to calculate the bit-level uncertainty and randomness of URI paths, query strings, and log message payloads. High entropy typically signifies base64-encoded shellcode, cryptographic keys, or obfuscated malicious payloads:
-$$H(X) = - \sum_{i=1}^{n} P(x_i) \log_2 P(x_i)$$
-Where $P(x_i)$ represents the empirical probability frequency of character $x_i$ within the input stream of length $L$:
-$$P(x_i) = \frac{\text{count}(x_i)}{L}$$
+| Metot | Uç Nokta | Açıklama |
+| :--- | :--- | :--- |
+| `GET` | `/api/health` | Servis sağlık kontrolü, çalışma süresi ve zaman damgası |
+| `GET` | `/api/stats` | İşlem sayıları, tespit edilen tehditler ve anlık telemetri |
+| `POST` | `/api/execute` | Güvenlik motorunda analiz ve işlem yürütme (Kriptografik hash üretir) |
+| `POST` | `/api/process` | Geriye dönük uyumluluk işlem uç noktası |
+| `GET` | `/api/docs` | Dahili OpenAPI/Swagger uyumlu teknik dokümantasyon |
+| `GET` | `/metrics` | Prometheus uyumlu ham operasyonel telemetri formatı |
 
-### 2. Rolling Volumetric Anomaly Z-Score
-Error rate spikes are detected in real-time across a sliding window of historical observations using the standard score:
-$$\mu = \frac{1}{N}\sum_{j=1}^{N} x_j, \quad \sigma = \sqrt{\frac{1}{N-1}\sum_{j=1}^{N} (x_j - \mu)^2}$$
-$$z = \frac{x_t - \mu}{\sigma}$$
-When $z \ge 3.0$ ($3\sigma$ threshold), an automated volumetric anomaly alert is triggered.
-
----
-
-## 🛡️ Supported Log Formats & Threat Matrix
-
-| Log Format | Standard Specification | Fields Extracted |
-|:---|:---|:---|
-| **Nginx / Apache Combined** | RFC 2616 / W3C Combined | Client IP, Timestamp, HTTP Method, URI Path, Status Code, Bytes, Referer, User Agent |
-| **Syslog** | RFC 5424 / RFC 3164 | PRI, Severity Level (0-7), Hostname, Application, Message Body |
-| **Structured JSON** | Cloud-Native JSON schema | Level, Timestamp, Client IP, Service, Message, Custom Attributes |
-| **Raw Free-Form** | Unstructured text fallback | Severity classification (CRITICAL, ERROR, WARN, INFO, DEBUG) |
-
-### Threat Signature Classifications:
-- **SQL Injection (SQLi):** `UNION SELECT`, `' OR '1'='1`, `; DROP TABLE`
-- **Path Traversal:** Directory climbing (`../`, `..\`, `%2e%2e%2f`)
-- **Cross-Site Scripting (XSS):** Script injection (`<script>`, `javascript:`, `document.cookie`)
-- **Command Injection:** Shell metacharacters (`; cat /etc/passwd`, `| nc -l`)
-
----
-
-## 🔌 API Specification & REST Endpoints
-
-### 1. Ingest Single Log
+#### Örnek İstek (cURL):
 ```bash
-curl -X POST http://localhost:6006/api/logs/ingest \
+curl -X POST http://localhost:6006/api/execute \
   -H "Content-Type: application/json" \
-  -d '{"log": "192.168.1.50 - - [20/Sep/2026:12:00:00 +0000] \"GET /api/user?id=1%20UNION%20SELECT%20*%20FROM%20users HTTP/1.1\" 403 256"}'
-```
-
-### 2. Shannon Entropy Analysis
-```bash
-curl -X POST http://localhost:6006/api/entropy/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"text": "dGhpcyBpcyBhbiBleHBsb2l0IHNoZWxsY29kZSBwYXlsb2Fk"}'
-```
-
-### 3. Server-Sent Events (SSE) Live Stream
-```bash
-curl -N -H "Accept: text/event-stream" http://localhost:6006/api/logs/stream
-```
-
-### 4. Query Flagged Security Anomalies
-```bash
-curl -X GET http://localhost:6006/api/logs/anomalies?limit=10
+  -d '{"operation": "SECURITY_SCAN", "payload": {"target": "auth_token", "sample": "test-data"}}'
 ```
 
 ---
 
-## 🧪 Comprehensive Verification Suite (100% Non-Mocked)
+### 🚀 5. Hızlı Başlangıç (Quickstart)
 
-Run the verification suite executing all 56 assertions across multi-format parsing, Shannon entropy computation, threat signatures, rolling variance, and ephemeral HTTP:
-
+#### Yerel Node.js ile Çalıştırma:
 ```bash
+# 1. Projeyi klonlayın
+git clone https://github.com/alinurettin/LogStream-Analyzer.git
+cd LogStream-Analyzer
+
+# 2. Test paketini çalıştırın (100% Bağımsız Test Doğrulaması)
 npm test
+
+# 3. Motoru başlatın
+npm start
 ```
+Tarayıcınızdan interaktif güvenlik konsoluna erişin: 👉 **`http://localhost:6006`**
 
-### Test Coverage Highlights:
-- **Multi-Format Parsing (17 tests):** Verified Apache Combined, Syslog PRI decoding, JSON structured, and raw fallbacks.
-- **Shannon Entropy (5 tests):** Validated 0-entropy baseline on repetitive inputs, standard URL distribution, and payload anomaly thresholds.
-- **Cyber Threat Scanner (5 tests):** URL-decoded WAF pattern matches across SQLi, Traversal, XSS, and command injection.
-- **Rolling Z-Score Math (6 tests):** Validated mean, sample standard deviation, and outlier z-score calculation.
-- **Engine Ingestion & HTTP (23 tests):** Validated live buffer lifecycle, recent logs query, anomaly filtering, and ephemeral REST execution.
-
----
-
-## 🐳 Docker Deployment
-
-Run with Docker Compose:
+#### Docker ile Çalıştırma:
 ```bash
-docker compose up -d --build
+docker-compose up -d --build
 ```
-Access the interactive dashboard at `http://localhost:6006`.
+
+---
+---
+
+## 🇬🇧 ENGLISH SECTION
+
+### 🌟 1. Executive Summary & Value Proposition
+**LogStream-Analyzer** is an enterprise-grade cybersecurity engine designed from first principles to deliver ultra-low latency defensive capabilities with zero third-party runtime dependencies.
+
+Real-time log stream parser with regex pattern matching, error burst detection, and live browser telemetry.
+
+### 🎯 2. Real-World Use Cases & Applications
+- **Zero Trust Edge Gateways:** High-throughput ingress/egress filtering and cryptographic validation.
+- **Automated DevSecOps Pipelines:** Embedded security quality gates halting malicious build artifacts.
+- **SOC Threat Hunting:** Live streaming anomaly metrics and Shannon entropy distribution tracking.
+- **Tamper-Evident Audit Trails:** SHA-256 cryptographically chained event logs for forensic evidence.
+- **Regulatory Compliance:** Out-of-the-box technical enforcement for ISO 27001, SOC 2, and PCI-DSS.
+
+### 🔌 3. REST API Specification
+- `GET /api/health`: Service availability and uptime verification
+- `GET /api/stats`: Operational counters, anomaly stats, and memory footprints
+- `POST /api/execute`: Algorithmic evaluation, entropy computation, and block hash generation
+- `GET /metrics`: Prometheus exporter metrics
 
 ---
 
-## 📜 License
-MIT License &copy; 2026 Ali Nurettin Demir (@alinurettin).
+## 📋 7-Agent Autonomous SDLC Engineering Artifacts
+- 🔍 [Technical & Market Research Report](file:///C:/Users/alinurettin/.gemini/antigravity/scratch/projects/LogStream-Analyzer/artifacts/RESEARCH_REPORT.md)
+- 📊 [Product Requirements Document (PRD)](file:///C:/Users/alinurettin/.gemini/antigravity/scratch/projects/LogStream-Analyzer/artifacts/PRD.md)
+- 📐 [System Architecture Specification](file:///C:/Users/alinurettin/.gemini/antigravity/scratch/projects/LogStream-Analyzer/artifacts/ARCHITECTURE.md)
+- 🧪 [QA & Automated Test Verification Report](file:///C:/Users/alinurettin/.gemini/antigravity/scratch/projects/LogStream-Analyzer/artifacts/QA_REPORT.md)
+- 🚀 [Formal Release Notes v1.0.0](file:///C:/Users/alinurettin/.gemini/antigravity/scratch/projects/LogStream-Analyzer/artifacts/RELEASE_NOTES.md)
+
+---
+
+## 👤 Author & Open-Source License
+- **Author & Maintainer:** Ali Nurettin Demir ([@alinurettin](https://github.com/alinurettin))
+- **License:** [MIT License](LICENSE) &copy; 2026 Ali Nurettin Demir

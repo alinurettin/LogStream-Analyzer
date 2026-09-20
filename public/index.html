@@ -1,155 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LogStream-Analyzer | Streaming Observability & Threat Detection Studio</title>
+  <title>LogStream-Analyzer - Cybersecurity Control Operations</title>
   <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="brand">
-      <div class="logo-box">📊</div>
-      <div>
-        <h1>LogStream-Analyzer <span class="badge-v">v2.0.0</span></h1>
-        <span class="sub">Streaming Telemetry, Multi-Format Parser, Shannon Entropy & Threat Detection</span>
-      </div>
-    </div>
-    <div class="header-right">
-      <button id="simulateBtn" class="btn-secondary">⚡ Inject Traffic Flood</button>
-      <div class="status-pill"><span class="dot"></span> SSE STREAM LIVE</div>
-    </div>
-  </header>
-
-  <main class="main">
-    <!-- Telemetry Cards -->
-    <section class="telemetry-grid">
-      <div class="stat-card">
-        <span class="stat-label">TOTAL LOGS INGESTED</span>
-        <span class="stat-value text-accent" id="statTotal">--</span>
-        <span class="stat-sub" id="statThroughput">-- logs / sec</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">ERROR RATE</span>
-        <span class="stat-value text-warning" id="statErrorRate">--%</span>
-        <span class="stat-sub" id="statErrorsCount">-- total 5xx/errors</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">THREAT SIGNATURES</span>
-        <span class="stat-value text-danger" id="statThreats">--</span>
-        <span class="stat-sub">SQLi / XSS / Traversal</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">ANOMALIES & SPIKES</span>
-        <span class="stat-value text-accent" id="statAnomalies">--</span>
-        <span class="stat-sub">3-Sigma Z-Score & Entropy</span>
-      </div>
-    </section>
-
-    <!-- Shannon Entropy & Threat Scanner -->
-    <section class="panel-card">
-      <div class="panel-header flex-between">
-        <h3>🔬 Real-Time Shannon Entropy & Exploit Payload Scanner</h3>
-        <span class="badge-tag">H(X) = -Σ P(x) log₂(P(x))</span>
-      </div>
-      <div class="entropy-box">
-        <div class="entropy-input-row">
-          <input type="text" id="entropyInput" value="/api/data?q=UNION%20SELECT%20username,password%20FROM%20users" placeholder="Enter URI query, log message or payload...">
-          <button id="calcEntropyBtn" class="btn-primary-inline">Analyze Payload</button>
-        </div>
-        <div class="entropy-results">
-          <div class="entropy-metric">
-            <span class="lbl">SHANNON ENTROPY:</span>
-            <span class="val" id="entropyVal">-- bits/char</span>
-          </div>
-          <div class="entropy-metric">
-            <span class="lbl">ANOMALY STATUS:</span>
-            <span class="val" id="entropyStatus">--</span>
-          </div>
-          <div class="entropy-metric">
-            <span class="lbl">THREAT SIGNATURE:</span>
-            <span class="val" id="threatSignature">--</span>
-          </div>
+  <div class="app-wrapper">
+    <header class="app-header">
+      <div class="brand">
+        <div class="shield-badge">🛡️</div>
+        <div>
+          <h1>LogStream-Analyzer</h1>
+          <p class="subtitle">High-Throughput Log Ingestion & Anomaly Alert Engine</p>
         </div>
       </div>
-    </section>
-
-    <!-- Workspace: Ingest & Waterfall -->
-    <div class="workspace-grid">
-      <!-- Left: Ingest Form -->
-      <div class="col-ingest">
-        <div class="panel-card">
-          <div class="panel-header">
-            <h3>📥 Ingest Live Log Entry</h3>
-          </div>
-          <div class="presets-row">
-            <button class="btn-preset" data-preset="combined">Nginx 200</button>
-            <button class="btn-preset" data-preset="sqli">SQLi Attack</button>
-            <button class="btn-preset" data-preset="traversal">Directory Traversal</button>
-            <button class="btn-preset" data-preset="json">JSON Error</button>
-            <button class="btn-preset" data-preset="syslog">Syslog Crit</button>
-          </div>
-          <form id="ingestForm">
-            <div class="form-group">
-              <label for="rawLogInput">Raw Log Entry</label>
-              <textarea id="rawLogInput" rows="4" required>192.168.1.100 - - [20/Sep/2026:12:00:00 +0000] "GET /api/v1/users HTTP/1.1" 200 1024 "-" "curl/7.81.0"</textarea>
-            </div>
-            <button type="submit" class="btn-primary">Process & Ingest Log</button>
-          </form>
-        </div>
-
-        <!-- Anomaly Stream -->
-        <div class="panel-card">
-          <div class="panel-header flex-between">
-            <h3>🚨 Recent Security Threats & Anomalies</h3>
-            <span class="badge-tag-danger" id="anomaliesBadge">0 Flagged</span>
-          </div>
-          <div class="anomalies-list" id="anomaliesList">
-            <div class="empty-state">No active anomalies detected.</div>
-          </div>
-        </div>
+      <div class="header-status">
+        <span class="pill domain-pill">Cybersecurity Defense</span>
+        <span class="pill status-pill online" id="serviceStatus">● ÇEVRİMİÇİ (ONLINE)</span>
       </div>
+    </header>
 
-      <!-- Right: Live Log Waterfall -->
-      <div class="col-waterfall">
-        <div class="panel-card">
-          <div class="panel-header flex-between">
-            <h3>🌊 Live Log Telemetry Stream</h3>
-            <button class="btn-sm" id="clearWaterfallBtn">Clear Table</button>
+    <main class="dashboard-grid">
+      <!-- Live Metrics Overview -->
+      <section class="card metrics-card">
+        <h2>📊 Canlı Operasyonel Telemetri (Live Telemetry)</h2>
+        <div class="metrics-row">
+          <div class="metric-box">
+            <span class="metric-label">Çalışma Süresi (Uptime)</span>
+            <span class="metric-val" id="uptimeVal">0s</span>
           </div>
-          <div class="table-wrap">
-            <table class="log-table">
-              <thead>
-                <tr>
-                  <th>Format</th>
-                  <th>Level</th>
-                  <th>Client IP</th>
-                  <th>Message / Request</th>
-                  <th>Entropy</th>
-                  <th>Flags</th>
-                </tr>
-              </thead>
-              <tbody id="logTableBody">
-                <tr><td colspan="6" class="text-center">Awaiting log stream events...</td></tr>
-              </tbody>
-            </table>
+          <div class="metric-box">
+            <span class="metric-label">Toplam İşlem (Operations)</span>
+            <span class="metric-val highlight" id="opsVal">0</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Tespit Edilen Anomali</span>
+            <span class="metric-val danger" id="anomaliesVal">0</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-label">Aktif Durum Kaydı</span>
+            <span class="metric-val" id="stateEntriesVal">0</span>
           </div>
         </div>
-      </div>
-    </div>
-  </main>
+      </section>
 
-  <footer class="footer">
-    <div class="footer-content">
-      <span>LogStream-Analyzer v2.0.0 &bull; Autonomously engineered by 7-Agent SDLC Software Factory</span>
-      <a href="https://github.com/alinurettin/LogStream-Analyzer" target="_blank" class="github-link">
-        GitHub: @alinurettin/LogStream-Analyzer
-      </a>
-    </div>
-  </footer>
+      <!-- Live Interactive Attack & Payload Tester -->
+      <section class="card tester-card">
+        <h2>⚡ Canlı Güvenlik & Yük Test Konsolu (Interactive Scanner)</h2>
+        <p class="section-desc">Aşağıdaki butonları kullanarak gerçek zamanlı yük simülasyonları yapabilir veya özel veri göndererek motorun Shannon entropi ve tehdit analizini test edebilirsiniz.</p>
+
+        <div class="preset-buttons">
+          <button class="btn btn-secondary" id="btnPresetNormal">🟢 Normal İstek (Safe)</button>
+          <button class="btn btn-secondary" id="btnPresetAttack">🔴 SQLi / XSS Simülasyonu</button>
+          <button class="btn btn-secondary" id="btnPresetEntropy">🟡 Yüksek Entropili Gizli Anahtar</button>
+        </div>
+
+        <div class="input-group">
+          <label for="operationType">İşlem / Protokol Türü:</label>
+          <input type="text" id="operationType" value="SECURITY_INSPECTION" class="form-input">
+        </div>
+
+        <div class="input-group">
+          <label for="payloadInput">Yük Verisi (JSON / Text Payload):</label>
+          <textarea id="payloadInput" rows="4" class="form-textarea" placeholder="İncelenecek yük verisini girin...">{ "user": "alice", "action": "read_telemetry" }</textarea>
+        </div>
+
+        <button class="btn btn-primary" id="btnExecute">🚀 Güvenlik Taramasını Çalıştır (Execute Scan)</button>
+
+        <div class="execution-result hidden" id="resultContainer">
+          <h3>🔍 Analiz Sonucu (Scan Telemetry):</h3>
+          <div class="result-details">
+            <div><strong>İşlem Kimliği (Op ID):</strong> <span id="resOpId">-</span></div>
+            <div><strong>Durum (Status):</strong> <span id="resStatus" class="status-badge">-</span></div>
+            <div><strong>Shannon Entropisi:</strong> <span id="resEntropy">- bits/byte</span></div>
+            <div><strong>Tehdit Tespiti:</strong> <span id="resThreat" class="status-badge">-</span></div>
+            <div><strong>SHA-256 Blok Özeti:</strong> <span class="hash-code" id="resDigest">-</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cryptographic Tamper-Evident Hash Chain -->
+      <section class="card audit-card">
+        <h2>⛓️ Kriptografik Denetim Kütüğü (Hash-Chained Audit Trail)</h2>
+        <p class="section-desc">Her güvenlik işlemi, bir önceki bloğun SHA-256 özeti ile bağlanır. Değiştirilemez ve kanıtlanabilir denetim izi sunar.</p>
+        <div class="audit-list" id="auditList">
+          <div class="audit-empty">Henüz işlem kaydı bulunmuyor.</div>
+        </div>
+      </section>
+
+      <!-- API Documentation Quick Reference -->
+      <section class="card docs-card">
+        <h2>🔌 Hızlı API Dokümantasyonu & cURL Entegrasyonu</h2>
+        <p class="section-desc">Bu servisi kendi mikroservislerinizden veya CI/CD süreçlerinizden doğrudan cURL ile çağırabilirsiniz:</p>
+        <div class="code-block">
+          <pre><code># Canlı durum analizi yürüt:
+curl -X POST http://localhost:6006/api/execute \
+  -H "Content-Type: application/json" \
+  -d '{"operation": "VERIFY_TOKEN", "payload": {"token": "sample-data"}}'</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p><strong>LogStream-Analyzer v1.0.0</strong> &bull; Geliştirici: <a href="https://github.com/alinurettin" target="_blank">Ali Nurettin Demir</a> &bull; MIT Lisansı</p>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
